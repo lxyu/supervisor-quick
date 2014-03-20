@@ -44,8 +44,8 @@
 <span class="na">supervisor.ctl_factory</span> <span class="o">=</span> <span class="s">supervisor_quick:make_quick_controllerplugin</span>
 </pre></div>
 
-<p>Then start <code>supervisorctl</code> and use <code>quickstart</code> and <code>quickstop</code> to
-start/stop processes.</p>
+<p>Then start <code>supervisorctl</code> and use <code>quickstart</code>, <code>quickstop</code> and
+<code>quickrestart</code> to start/stop/restart processes.</p>
 
 <pre><code>&gt; quickstart app:0
 &gt; quickstart app:
@@ -56,6 +56,11 @@ start/stop processes.</p>
 &gt; quickstop app:
 &gt; quickstop ap*
 &gt; quickstop all
+
+&gt; quickrestart app:2
+&gt; quickrestart app:
+&gt; quickrestart ap*
+&gt; quickrestart all
 </code></pre>
 
 <p>It effects <code>supervisorctl</code>, so you don't have to restart the whole
@@ -65,7 +70,7 @@ supervisord to make it work.</p>
 <a name="why" class="anchor" href="#why"><span class="octicon octicon-link"></span></a>Why</h2>
 
 <p>I write this plugin because supervisor is just tooooo slow in
-stop/start app server in our prod servers.</p>
+start/stop/restart app server in our prod servers.</p>
 
 <p>And I checked the source code and found it is because of the
 nasty callbacks stack, and this is a quote from source code
@@ -92,7 +97,7 @@ require a C extension to the Python signal module to allow
 the setting of ignore flags to signals.</p>
 </blockquote>
 
-<p>And this plugin will do a <code>quick</code> start/stop action that bypass
+<p>And this plugin will do a <code>quick</code> start/stop/restart action that bypass
 all the callback checks, making it lightning fast.</p>
 
 <p>It also have wildcard concurrent execution support, keeping it fast
