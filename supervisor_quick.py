@@ -9,8 +9,9 @@ from supervisor.supervisorctl import ControllerPluginBase
 class QuickControllerPlugin(ControllerPluginBase):
     name = "quick"
 
-    def __init__(self, controller, **config):
+    def __init__(self, controller, retries=30, **config):
         self.ctl = controller
+        self.retries = retries
 
     def _quick_do(self, arg, command):
         assert command in ("start", "stop")
@@ -45,10 +46,14 @@ class QuickControllerPlugin(ControllerPluginBase):
 
             # state check
             state = "RUNNING" if command is "start" else "STOPPED"
-            while True:
-                if state == supervisor.getProcessInfo(process)['statename']:
+            count = self.retries
+            while count:
+                current_state = supervisor.getProcessInfo(process)['statename']
+                if state == current_state:
                     return self.ctl.output("{}: {}".format(process, state))
                 time.sleep(0.1)
+                count -= 1
+            return self.ctl.output("{}: {}".format(process, current_state))
 
         threads = []
         for p in processes:
