@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="supervisor-quick",
-    version="0.1.1",
+    version="0.1.2",
     description="Bypass supervisor's nasty callbacks stack and make it quick!",
     author="Lx Yu",
     author_email="i@lxyu.net",
