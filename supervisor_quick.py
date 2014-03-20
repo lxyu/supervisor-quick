@@ -1,4 +1,6 @@
 import fnmatch
+import threading
+import xmlrpclib
 
 from supervisor.supervisorctl import ControllerPluginBase
 
@@ -12,9 +14,6 @@ class QuickControllerPlugin(ControllerPluginBase):
     def _quick_do(self, arg, command):
         assert command in ("start", "stop", "restart")
 
-        supervisor = self.ctl.get_supervisor()
-        do = getattr(supervisor, "{}Process".format(command))
-
         patterns = arg.strip().split()
         if not patterns:
             return self.ctl.output('No process matched given expression.')
@@ -27,19 +26,32 @@ class QuickControllerPlugin(ControllerPluginBase):
             patterns = ['*']
 
         processes = set()
-        for p in supervisor.getAllProcessInfo():
+        for p in self.ctl.get_supervisor().getAllProcessInfo():
             p_name = "{}:{}".format(p["group"], p["name"])
             for pattern in patterns:
                 if fnmatch.fnmatch(p_name, pattern):
                     processes.add(p_name)
                     break
 
+        def _do(process):
+            supervisor = self.ctl.get_supervisor()
+            _command = getattr(supervisor, "{}Process".format(command))
+            try:
+                _command(process, False)
+                self.ctl.output("{}: {}ed".format(process, command))
+            except xmlrpclib.Fault as e:
+                self.ctl.output("{} ERROR({})".format(
+                    process, e.faultString.split(':')[0]))
+
+        threads = []
         for p in processes:
             # set wait to False to do it quick
-            do(p, False)
+            t = threading.Thread(target=_do, args=(p,))
+            t.start()
+            threads.append(t)
 
-        # TODO recheck result to make sure it started
-        return self.ctl.output("{} quick{}ed".format(arg, command))
+        for t in threads:
+            t.join()
 
     def do_quickstop(self, arg):
         self._quick_do(arg, command='stop')
