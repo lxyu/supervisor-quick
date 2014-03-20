@@ -67,7 +67,8 @@ class QuickControllerPlugin(ControllerPluginBase):
         self._quick_do(arg, command='start')
 
     def do_quickrestart(self, arg):
-        pass
+        self._quick_do(arg, command='stop')
+        self._quick_do(arg, command='start')
 
 
 def make_quick_controllerplugin(controller, **config):
