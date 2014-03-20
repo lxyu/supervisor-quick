@@ -18,8 +18,8 @@ And add the following config to `supervisord.conf`.
     [ctlplugin:quick]
     supervisor.ctl_factory = supervisor_quick:make_quick_controllerplugin
 
-Then start `supervisorctl` and use `quickstart` and `quickstop` to
-start/stop processes.
+Then start `supervisorctl` and use `quickstart`, `quickstop` and
+`quickrestart` to start/stop/restart processes.
 
 .. code::
 
@@ -33,6 +33,11 @@ start/stop processes.
     > quickstop ap*
     > quickstop all
 
+    > quickrestart app:2
+    > quickrestart app:
+    > quickrestart ap*
+    > quickrestart all
+
 It effects `supervisorctl`, so you don't have to restart the whole
 supervisord to make it work.
 
@@ -41,7 +46,7 @@ Why
 ---
 
 I write this plugin because supervisor is just tooooo slow in
-stop/start app server in our prod servers.
+start/stop/restart app server in our prod servers.
 
 And I checked the source code and found it is because of the
 nasty callbacks stack, and this is a quote from source code
@@ -66,7 +71,7 @@ nasty callbacks stack, and this is a quote from source code
     # require a C extension to the Python signal module to allow
     # the setting of ignore flags to signals.
 
-And this plugin will do a `quick` start/stop action that bypass
+And this plugin will do a `quick` start/stop/restart action that bypass
 all the callback checks, making it lightning fast.
 
 It also have wildcard concurrent execution support, keeping it fast
