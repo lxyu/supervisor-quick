@@ -29,7 +29,7 @@ class QuickControllerPlugin(ControllerPluginBase):
 
         processes = set()
         for p in self.ctl.get_supervisor().getAllProcessInfo():
-            p_name = "{}:{}".format(p["group"], p["name"])
+            p_name = "{0}:{1}".format(p["group"], p["name"])
             for pattern in patterns:
                 if fnmatch.fnmatch(p_name, pattern):
                     processes.add(p_name)
@@ -37,11 +37,11 @@ class QuickControllerPlugin(ControllerPluginBase):
 
         def _do(process):
             supervisor = self.ctl.get_supervisor()
-            _command = getattr(supervisor, "{}Process".format(command))
+            _command = getattr(supervisor, "{0}Process".format(command))
             try:
                 _command(process, False)
             except xmlrpclib.Fault as e:
-                return self.ctl.output("{} ERROR({})".format(
+                return self.ctl.output("{0} ERROR({1})".format(
                     process, e.faultString.split(':')[0]))
 
             # state check
@@ -50,10 +50,10 @@ class QuickControllerPlugin(ControllerPluginBase):
             while count:
                 current_state = supervisor.getProcessInfo(process)['statename']
                 if state == current_state:
-                    return self.ctl.output("{}: {}".format(process, state))
+                    return self.ctl.output("{0}: {1}".format(process, state))
                 time.sleep(0.1)
                 count -= 1
-            return self.ctl.output("{}: {}".format(process, current_state))
+            return self.ctl.output("{0}: {1}".format(process, current_state))
 
         threads = []
         for p in processes:
