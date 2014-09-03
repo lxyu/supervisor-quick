@@ -9,7 +9,7 @@ from supervisor.supervisorctl import ControllerPluginBase
 class QuickControllerPlugin(ControllerPluginBase):
     name = "quick"
 
-    def __init__(self, controller, retries=30, **config):
+    def __init__(self, controller, retries=600, **config):
         self.ctl = controller
         self.retries = retries
 
