@@ -9,7 +9,7 @@ from supervisor.supervisorctl import ControllerPluginBase
 class QuickControllerPlugin(ControllerPluginBase):
     name = "quick"
 
-    def __init__(self, controller, retries=30, **config):
+    def __init__(self, controller, retries=600, **config):
         self.ctl = controller
         self.retries = retries
 
@@ -63,7 +63,7 @@ class QuickControllerPlugin(ControllerPluginBase):
             threads.append(t)
 
         for t in threads:
-            t.join(3)
+            t.join()
 
     def do_quickstop(self, arg):
         self._quick_do(arg, command='stop')
