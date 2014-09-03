@@ -63,7 +63,7 @@ class QuickControllerPlugin(ControllerPluginBase):
             threads.append(t)
 
         for t in threads:
-            t.join(3)
+            t.join()
 
     def do_quickstop(self, arg):
         self._quick_do(arg, command='stop')
