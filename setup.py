@@ -1,8 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from setuptools import setup
 
 setup(
     name="supervisor-quick",
-    version="0.1.4",
+    version=__import__("supervisor_quick").__version__,
     description="Bypass supervisor's nasty callbacks stack and make it quick!",
     author="Lx Yu",
     author_email="i@lxyu.net",
